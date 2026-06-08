@@ -1,0 +1,73 @@
+from kivy.app import App
+from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+
+# --- Nota: Asegúrate de tener definidas estas variables globales en tu código ---
+# COLOR_ACENTO = [0.2, 0.6, 1, 1] 
+# COLOR_TEXTO = [1, 1, 1, 1]
+# COLOR_BOTON_BACK = [0.8, 0.2, 0.2, 1]
+# def fondo_oscuro(layout): pass
+# def boton(texto, color, alto, callback): return Button(...)
+# --------------------------------------------------------------------------------
+
+class PantallaLicencia(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        layout = BoxLayout(orientation='vertical', padding=30, spacing=20)
+        fondo_oscuro(layout)
+        
+        # Título
+        layout.add_widget(Label(
+            text='[b]📄 Licencia y Autoría[/b]', 
+            markup=True, 
+            font_size=24, 
+            color=COLOR_ACENTO, 
+            size_hint=(1, None), 
+            height=50
+        ))
+        
+        # Bloque de información corregido
+        info_licencia = (
+            "[b]Sistema:[/b] EUNIPRINCEZ DIGITAL v2026.1\n"
+            "[b]Autor:[/b] Juan Valentín García Espinoza\n"
+            "[b]ID GAEJ940310HSPRSN02[/b]\n"
+            "[b]ID MEX 2608132112[/b]\n\n"
+            "Este software ejecuta cálculos numéricos avanzados mediante\n"
+            "bisección industrial para instrumentación y análisis de fallas."
+        )
+        
+        lbl_info = Label(
+            text=info_licencia, 
+            markup=True, 
+            font_size=14, 
+            color=COLOR_TEXTO, 
+            halign='center',      # Alineación horizontal al centro
+            valign='middle'       # Alineación vertical al centro
+        )
+        
+        # El truco de Kivy: forzar a la caja de texto a medir lo mismo que el widget Label
+        lbl_info.bind(size=lambda widget, size: setattr(widget, 'text_size', size))
+        
+        layout.add_widget(lbl_info)
+        
+        # Botón de regreso
+        layout.add_widget(boton('◀  Volver al Menú', color=COLOR_BOTON_BACK, alto=50, callback=self.volver))
+        self.add_widget(layout)
+
+    def volver(self, *a):
+        self.manager.transition = SlideTransition(direction='right')
+        self.manager.current = 'inicio'
+
+class EuniprincezApp(App):
+    def build(self):
+        sm = ScreenManager()
+        # Asegúrate de que PantallaInicio y PantallaCalculadora estén importadas/definidas
+        sm.add_widget(PantallaInicio(name='inicio'))
+        sm.add_widget(PantallaCalculadora(name='calculadora'))
+        sm.add_widget(PantallaLicencia(name='licencia'))
+        return sm
+
+if __name__ == '__main__':
+    EuniprincezApp().run()
+:
